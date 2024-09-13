@@ -5,23 +5,6 @@ import { Button } from "@/components/ui/button"
 import { ArrowUpRight, Move } from "lucide-react"
 import Image from 'next/image'
 
-const slides = [
-  {
-    image: "/images/gaming.jpg",
-    title: "Gaming Community",
-    description: "Join our vibrant community of gamers. Share strategies, find teammates, and level up together!"
-  },
-  {
-    image: "/images/tech.jpg",
-    title: "Tech Enthusiasts",
-    description: "Connect with fellow developers, designers, and tech enthusiasts. Collaborate on projects and stay updated with the latest trends."
-  },
-  {
-    image: "/images/creative.jpg",
-    title: "Creative Arts",
-    description: "A space for artists, musicians, and creators to share their work, get feedback, and find inspiration."
-  }
-]
 
 export default function Component() {
   const [currentSlide, setCurrentSlide] = useState(0)
