@@ -9,17 +9,17 @@ import Image from 'next/image'
 
 const slides = [
   {
-    image: "https://picsum.photos/1920/1080?random=1",
+    image: "/images/gaming.jpg", // Assicurati che questo file esista nella cartella public/images
     title: "Gaming Community",
     description: "Join our vibrant community of gamers. Share strategies, find teammates, and level up together!"
   },
   {
-    image: "https://picsum.photos/1920/1080?random=2",
+    image: "/images/tech.jpg", // Assicurati che questo file esista nella cartella public/images
     title: "Tech Enthusiasts",
     description: "Connect with fellow developers, designers, and tech enthusiasts. Collaborate on projects and stay updated with the latest trends."
   },
   {
-    image: "https://picsum.photos/1920/1080?random=3",
+    image: "/images/creative.jpg", // Assicurati che questo file esista nella cartella public/images
     title: "Creative Arts",
     description: "A space for artists, musicians, and creators to share their work, get feedback, and find inspiration."
   }
