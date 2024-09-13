@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Button } from "@/components/ui/button"
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, Move } from "lucide-react"
 import Image from 'next/image'
 
 const slides = [
@@ -26,6 +26,14 @@ const slides = [
 export default function Component() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isLiveStreamOnline, setIsLiveStreamOnline] = useState(true);
+  const [isPositionSet, setIsPositionSet] = useState(false);
+  const [viewerCount, setViewerCount] = useState(1);
+  const [streamTitle, setStreamTitle] = useState("iamVIZZI is streaming");
+  const [streamCategory, setStreamCategory] = useState("Just Chatting");
+  const dragRef = useRef(null);
 
   const nextSlide = useCallback(() => {
     if (!isPaused) {
@@ -37,6 +45,68 @@ export default function Component() {
     const timer = setInterval(nextSlide, 2000)
     return () => clearInterval(timer)
   }, [nextSlide])
+
+  useEffect(() => {
+    const updatePosition = () => {
+      setPosition({
+        x: window.innerWidth - 420,
+        y: window.innerHeight - 245  // 225 (height) + 20 (bottom margin)
+      });
+      setIsPositionSet(true);
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    return () => window.removeEventListener('resize', updatePosition);
+  }, []);
+
+  useEffect(() => {
+    const fetchStreamInfo = async () => {
+      try {
+        const response = await fetch('https://kick.com/api/v1/channels/iamvizzi');
+        const data = await response.json();
+        setIsLiveStreamOnline(data.livestream !== null);
+        if (data.livestream) {
+          setViewerCount(data.livestream.viewer_count);
+          setStreamTitle(data.livestream.session_title);
+          setStreamCategory(data.livestream.categories[0]?.name || "Just Chatting");
+        }
+      } catch (error) {
+        console.error('Error fetching stream info:', error);
+      }
+    };
+
+    fetchStreamInfo();
+    const intervalId = setInterval(fetchStreamInfo, 60000); // Update every minute
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    const startX = e.pageX - position.x;
+    const startY = e.pageY - position.y;
+
+    const handleMouseMove = (e) => {
+      setPosition({
+        x: Math.max(0, Math.min(e.pageX - startX, window.innerWidth - 420)),
+        y: Math.max(0, Math.min(e.pageY - startY, window.innerHeight - 245))
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  if (!isLiveStreamOnline) {
+    return null;
+  }
 
   return (
     <div className="DuelGambleMainContainer flex min-h-screen bg-white" itemScope itemType="https://schema.org/WebPage">
@@ -116,6 +186,35 @@ export default function Component() {
             <ArrowUpRight className="DuelGambleArrowIcon w-5 h-5 mr-2 transition-transform duration-300 group-hover:rotate-45" aria-hidden="true" />
             Visit Our Website
           </Button>
+          <div 
+            ref={dragRef}
+            className="DuelGambleLiveStream absolute cursor-move group"
+            style={{
+              top: `${position.y}px`,
+              left: `${position.x}px`,
+              zIndex: 1000,
+            }}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="relative w-[400px] h-[225px] overflow-hidden rounded-xl border-2 border-gray-300 shadow-md">
+              <div className="absolute top-0 left-0 w-full h-8 bg-gray-800 bg-opacity-50 flex items-center justify-between px-2 cursor-move">
+                <span className="text-white text-sm font-semibold">Live Stream</span>
+                <Move className="w-5 h-5 text-white" />
+              </div>
+              <iframe 
+                src="https://player.kick.com/iamvizzi?autoplay=true" 
+                height="100%"
+                width="100%"
+                frameBorder="0" 
+                scrolling="no" 
+                allowFullScreen={true}
+                title="FeralGirl Live Stream"
+                className="rounded-b-xl"
+              > 
+              </iframe>
+              <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500 rounded-xl transition-colors duration-300 pointer-events-none"></div>
+            </div>
+          </div>
           <div className="DuelGambleCopyright text-center text-sm text-gray-500 mt-4 font-sf-pro">
             ©2024 <a href="https://duelgamble.com" className="text-black font-bold hover:text-[#5865F2] transition-colors duration-300">DUELGAMBLE.COM</a>
           </div>
