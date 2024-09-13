@@ -82,27 +82,28 @@ export default function Component() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     const startX = e.pageX - position.x;
     const startY = e.pageY - position.y;
-
-    const handleMouseMove = (e) => {
+  
+    const handleMouseMove = (e: MouseEvent) => {
       setPosition({
         x: Math.max(0, Math.min(e.pageX - startX, window.innerWidth - 420)),
         y: Math.max(0, Math.min(e.pageY - startY, window.innerHeight - 245))
       });
     };
-
+  
     const handleMouseUp = () => {
       setIsDragging(false);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-
+  
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   };
+  
 
   if (!isLiveStreamOnline) {
     return null;
