@@ -3,23 +3,23 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { ArrowUpRight } from "lucide-react"
-import Image from 'next/image'
+import Image from 'next/image' 
 
 
 
 const slides = [
   {
-    image: "/placeholder.svg?height=1080&width=1920&text=Community+1",
+    image: "https://picsum.photos/1920/1080?random=1",
     title: "Gaming Community",
     description: "Join our vibrant community of gamers. Share strategies, find teammates, and level up together!"
   },
   {
-    image: "/placeholder.svg?height=1080&width=1920&text=Community+2",
+    image: "https://picsum.photos/1920/1080?random=2",
     title: "Tech Enthusiasts",
     description: "Connect with fellow developers, designers, and tech enthusiasts. Collaborate on projects and stay updated with the latest trends."
   },
   {
-    image: "/placeholder.svg?height=1080&width=1920&text=Community+3",
+    image: "https://picsum.photos/1920/1080?random=3",
     title: "Creative Arts",
     description: "A space for artists, musicians, and creators to share their work, get feedback, and find inspiration."
   }
@@ -77,9 +77,9 @@ export default function Component() {
                 <Image
                   src={slide.image}
                   alt={`Discord Community ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg cursor-pointer"
+                  width={1920}
+                  height={1080}
+                  className="rounded-lg cursor-pointer object-cover"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-8 rounded-b-3xl">
                   <h2 className="text-2xl font-bold mb-2 text-white">{slide.title}</h2>
